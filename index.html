@@ -184,6 +184,10 @@
     <div class="team-count-btn" data-count="4" onclick="selectTeamCount(this)">4팀</div>
   </div>
   <div style="margin-top:14px;">
+    <label for="matchDate" style="display:block; font-size:0.8rem; color:#7a9a82; margin-bottom:6px; font-weight:700;">📅 경기 날짜</label>
+    <input type="date" id="matchDate" style="width:100%; padding:10px 12px; border-radius:10px; border:1.5px solid #2a3a2a; background:#172014; color:#e5e7eb; font-size:0.9rem;">
+  </div>
+  <div style="margin-top:14px;">
     <button type="button" class="btn btn-primary" id="runBtn" onclick="runBalance()">🎲 팀 배정 시작</button>
   </div>
 </div>
@@ -340,8 +344,11 @@
   function buildResultText() {
     if (!lastResult) return '';
     const { teams, diff } = lastResult;
-    const today = new Date().toLocaleDateString('ko-KR', { month: 'long', day: 'numeric', weekday: 'short' });
-    let text = `⚽ 계양그랜드 FC 팀 배정 결과\n📅 ${today} | 밸런스 편차 ${diff}점\n${'─'.repeat(20)}\n`;
+    const dateInput = document.getElementById('matchDate').value;
+    const matchDate = dateInput
+      ? new Date(dateInput + 'T00:00:00').toLocaleDateString('ko-KR', { month: 'long', day: 'numeric', weekday: 'short' })
+      : new Date().toLocaleDateString('ko-KR', { month: 'long', day: 'numeric', weekday: 'short' });
+    let text = `⚽ 계양그랜드 FC 팀 배정 결과\n📅 ${matchDate} | 밸런스 편차 ${diff}점\n${'─'.repeat(20)}\n`;
     teams.forEach((team, i) => {
       text += `\n${TEAM_NAMES[i]} [${teamScore(team)}점 · ${team.length}명]\n`;
       team.slice().sort((a,b)=>a.tier-b.tier).forEach(p => { text += `  · ${p.name} (${TIER_LABELS[p.tier]})\n`; });
@@ -388,6 +395,16 @@
     showToast('이 브라우저는 공유 기능을 지원하지 않아 텍스트를 복사했어요.');
   }
 
+  function setDefaultMatchDate() {
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    const yyyy = tomorrow.getFullYear();
+    const mm = String(tomorrow.getMonth() + 1).padStart(2, '0');
+    const dd = String(tomorrow.getDate()).padStart(2, '0');
+    document.getElementById('matchDate').value = `${yyyy}-${mm}-${dd}`;
+  }
+
+  setDefaultMatchDate();
   updateCount();
 </script>
 </body>
