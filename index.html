@@ -302,7 +302,7 @@
       const diff = Math.max(...scores) - Math.min(...scores);
       if (diff < bestDiff) { bestDiff = diff; best = teams; if (bestDiff <= 1) break; }
     }
-    return { teams: best, diff: bestDiff };
+    return { teams: shuffle(best), diff: bestDiff };
   }
 
   function runBalance() {
